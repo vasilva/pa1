@@ -1,0 +1,28 @@
+2025-04-10 17:59:39,201
+    INFO: Crawling: http://www.r7.com/
+2025-04-10 17:59:39,201
+    ERROR: Failed to crawl: http://www.r7.com/
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 121, in __call__
+    self.crawl(url)
+    ~~~~~~~~~~^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 109, in crawl
+    html = self.download_url(url)
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 48, in download_url
+    with open(f"{url}.warc.gz", "wb") as output:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'http://www.r7.com/.warc.gz'
+2025-04-10 17:59:39,205
+    INFO: Crawling: http://mdemulher.abril.com.br/
+2025-04-10 17:59:39,205
+    ERROR: Failed to crawl: http://mdemulher.abril.com.br/
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 121, in __call__
+    self.crawl(url)
+    ~~~~~~~~~~^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 109, in crawl
+    html = self.download_url(url)
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 48, in download_url
+    with open(f"{url}.warc.gz", "wb") as output:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'http://mdemulher.abril.com.br/.warc.gz'
