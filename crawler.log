@@ -1,28 +1,532 @@
-2025-04-10 17:59:39,201
-    INFO: Crawling: http://www.r7.com/
-2025-04-10 17:59:39,201
-    ERROR: Failed to crawl: http://www.r7.com/
+2025-04-11 22:24:11,934
+INFO: Crawling: http://www.r7.com/
+2025-04-11 22:24:12,462
+INFO: Downloaded robots.txt: http://www.r7.com
+2025-04-11 22:24:12,463
+INFO: Current depth: 1
+2025-04-11 22:24:12,682
+INFO: Downloaded: http://www.r7.com/
+2025-04-11 22:24:13,972
+INFO: Downloaded robots.txt: https://www.r7.com
+2025-04-11 22:24:14,711
+ERROR: Failed to download robots.txt: https://assine.playplus.com
+NoneType: None
+2025-04-11 22:24:15,199
+INFO: Downloaded robots.txt: https://record.r7.com
+2025-04-11 22:24:16,316
+ERROR: Failed to download robots.txt: https://www.playplus.com
+NoneType: None
+2025-04-11 22:24:17,405
+INFO: Downloaded robots.txt: https://esportes.r7.com
+2025-04-11 22:24:18,012
+INFO: Downloaded robots.txt: https://entretenimento.r7.com
+2025-04-11 22:24:18,516
+INFO: Downloaded robots.txt: https://noticias.r7.com
+2025-04-11 22:24:18,659
+INFO: Downloaded robots.txt: https://acrediteounao.com
+2025-04-11 22:24:18,803
+INFO: Downloaded robots.txt: https://www.clickgratis.com.br
+2025-04-11 22:24:19,569
+INFO: Downloaded robots.txt: https://www.e-farsas.com
+2025-04-11 22:24:19,696
+INFO: Downloaded robots.txt: https://www.feedclub.com.br
+2025-04-11 22:24:19,834
+INFO: Downloaded robots.txt: https://www.jornalciencia.com
+2025-04-11 22:24:20,334
+INFO: Downloaded robots.txt: https://segredosdomundo.r7.com
+2025-04-11 22:24:20,511
+INFO: Downloaded robots.txt: https://www.amomeupet.org
+2025-04-11 22:24:21,845
+INFO: Downloaded robots.txt: https://areademulher.r7.com
+2025-04-11 22:24:22,149
+INFO: Downloaded robots.txt: https://cabelosloiros.com.br
+2025-04-11 22:24:22,732
+INFO: Downloaded robots.txt: https://beleza.culturamix.com
+2025-04-11 22:24:23,715
+INFO: Downloaded robots.txt: https://lorena.r7.com
+2025-04-11 22:24:23,883
+INFO: Downloaded robots.txt: https://patricinhaesperta.com.br
+2025-04-11 22:24:24,184
+INFO: Downloaded robots.txt: https://tudosobrecabelos.com.br
+2025-04-11 22:24:24,364
+INFO: Downloaded robots.txt: https://www.dicasdetreino.com.br
+2025-04-11 22:24:24,939
+INFO: Downloaded robots.txt: https://falauniversidades.com.br
+2025-04-11 22:24:25,298
+INFO: Downloaded robots.txt: https://www.greenme.com.br
+2025-04-11 22:24:26,242
+INFO: Downloaded robots.txt: https://imoveis.culturamix.com
+2025-04-11 22:24:26,362
+INFO: Downloaded robots.txt: https://casaeconstrucao.org
+2025-04-11 22:24:27,404
+INFO: Downloaded robots.txt: https://ideiasparadecorar.com
+2025-04-11 22:24:27,937
+INFO: Downloaded robots.txt: https://www.prazeresdamesa.com.br
+2025-04-11 22:24:28,875
+INFO: Downloaded robots.txt: https://moda.culturamix.com
+2025-04-11 22:24:30,892
+INFO: Downloaded robots.txt: https://moda20.com.br
+2025-04-11 22:24:31,065
+INFO: Downloaded robots.txt: https://guiaviajarmelhor.com.br
+2025-04-11 22:24:32,991
+INFO: Downloaded robots.txt: https://md1orlando.com
+2025-04-11 22:24:34,114
+INFO: Downloaded robots.txt: https://brasilcaminhoneiro.com.br
+2025-04-11 22:24:35,851
+INFO: Downloaded robots.txt: https://www.arrobanerd.com.br
+2025-04-11 22:24:35,977
+INFO: Downloaded robots.txt: https://www.crunchyroll.com
+2025-04-11 22:24:36,334
+INFO: Downloaded robots.txt: https://www.einerd.com.br
+2025-04-11 22:24:36,454
+INFO: Downloaded robots.txt: https://estacaonerd.com
+2025-04-11 22:24:42,328
+ERROR: Failed to download robots.txt: https://hitsite.com.br
 Traceback (most recent call last):
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 121, in __call__
-    self.crawl(url)
-    ~~~~~~~~~~^^^^^
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 109, in crawl
-    html = self.download_url(url)
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 48, in download_url
-    with open(f"{url}.warc.gz", "wb") as output:
-         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'http://www.r7.com/.warc.gz'
-2025-04-10 17:59:39,205
-    INFO: Crawling: http://mdemulher.abril.com.br/
-2025-04-10 17:59:39,205
-    ERROR: Failed to crawl: http://mdemulher.abril.com.br/
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+  File "/usr/lib/python3.13/http/client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/client.py", line 292, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.13/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 121, in __call__
-    self.crawl(url)
-    ~~~~~~~~~~^^^^^
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 109, in crawl
-    html = self.download_url(url)
-  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 48, in download_url
-    with open(f"{url}.warc.gz", "wb") as output:
-         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'http://mdemulher.abril.com.br/.warc.gz'
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 536, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+        self, url, f"Read timed out. (read timeout={timeout_value})"
+    ) from err
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='hitsite.com.br', port=443): Read timed out. (read timeout=5)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 123, in download_robots_txt
+    robots_txt = requests.get(urljoin(base_url, "/robots.txt"), timeout=TIMEOUT)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 713, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='hitsite.com.br', port=443): Read timed out. (read timeout=5)
+2025-04-11 22:24:42,561
+INFO: Downloaded robots.txt: https://www.jbox.com.br
+2025-04-11 22:24:42,895
+ERROR: Failed to download robots.txt: https://ovicio.com.br
+NoneType: None
+2025-04-11 22:24:44,019
+INFO: Downloaded robots.txt: https://multiversonoticias.com.br
+2025-04-11 22:24:44,117
+INFO: Downloaded robots.txt: https://www.revistabula.com
+2025-04-11 22:24:44,241
+INFO: Downloaded robots.txt: https://trecobox.com.br
+2025-04-11 22:24:44,380
+INFO: Downloaded robots.txt: https://bebemamae.com
+2025-04-11 22:24:44,925
+INFO: Downloaded robots.txt: https://www.estrelando.com.br
+2025-04-11 22:24:45,058
+INFO: Downloaded robots.txt: https://feedtv.news
+2025-04-11 22:24:45,267
+INFO: Downloaded robots.txt: https://novabrasilfm.com.br
+2025-04-11 22:24:45,447
+INFO: Downloaded robots.txt: https://revista.cifras.com.br
+2025-04-11 22:24:45,613
+INFO: Downloaded robots.txt: https://www.tenhomaisdiscosqueamigos.com
+2025-04-11 22:24:46,212
+INFO: Downloaded robots.txt: https://www.autoracing.com.br
+2025-04-11 22:24:46,892
+ERROR: Failed to download robots.txt: https://gamehall.com.br
+NoneType: None
+2025-04-11 22:24:47,032
+INFO: Downloaded robots.txt: https://www.gamerpoint.com.br
+2025-04-11 22:24:47,486
+INFO: Downloaded robots.txt: https://genioquiz.com.br
+2025-04-11 22:24:48,867
+INFO: Downloaded robots.txt: https://muramasa.com.br
+2025-04-11 22:24:49,977
+INFO: Downloaded robots.txt: https://www.outerspace.com.br
+2025-04-11 22:24:50,547
+INFO: Downloaded robots.txt: https://overplay.com.br
+2025-04-11 22:24:50,682
+INFO: Downloaded robots.txt: https://www.goal.com
+2025-04-11 22:24:52,003
+ERROR: Failed to download robots.txt: https://guiadoboleiro.com.br
+NoneType: None
+2025-04-11 22:24:53,401
+INFO: Downloaded robots.txt: https://jogada10.com.br
+2025-04-11 22:24:53,607
+INFO: Downloaded robots.txt: https://www.ogol.com.br
+2025-04-11 22:24:53,954
+INFO: Downloaded robots.txt: https://placar.com.br
+2025-04-11 22:24:54,459
+ERROR: Failed to download robots.txt: https://portaltimes.com.br
+NoneType: None
+2025-04-11 22:24:54,717
+INFO: Downloaded robots.txt: https://livebasketballbr.com
+2025-04-11 22:24:54,931
+INFO: Downloaded robots.txt: http://www.outerspace.com.br
+2025-04-11 22:24:55,431
+ERROR: Failed to download robots.txt: http://www.portaldovaletudo.com.br
+NoneType: None
+2025-04-11 22:24:55,754
+INFO: Downloaded robots.txt: https://tatame.com.br
+2025-04-11 22:24:56,374
+INFO: Downloaded robots.txt: https://cupons.r7.com
+2025-04-11 22:24:57,321
+INFO: Downloaded robots.txt: https://cinepop.com.br
+2025-04-11 22:24:58,434
+ERROR: Failed to download robots.txt: https://www.geekhere.com.br/categoria/serie/
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 741, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+        sock=sock,
+    ...<14 lines>...
+        assert_fingerprint=self.assert_fingerprint,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 920, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+        sock=sock,
+    ...<8 lines>...
+        tls_in_tls=tls_in_tls,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/ssl_.py", line 460, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/ssl_.py", line 504, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sock=sock,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        session=session
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.13/ssl.py", line 1076, in _create
+    self.do_handshake()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/ssl.py", line 1372, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.geekhere.com.br'. (_ssl.c:1028)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.geekhere.com.br'. (_ssl.c:1028)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.geekhere.com.br', port=443): Max retries exceeded with url: /robots.txt (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.geekhere.com.br'. (_ssl.c:1028)")))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 123, in download_robots_txt
+    robots_txt = requests.get(urljoin(base_url, "/robots.txt"), timeout=TIMEOUT)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 698, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='www.geekhere.com.br', port=443): Max retries exceeded with url: /robots.txt (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.geekhere.com.br'. (_ssl.c:1028)")))
+2025-04-11 22:24:59,586
+INFO: Downloaded robots.txt: https://www.legiaodosherois.com.br
+2025-04-11 22:24:59,795
+INFO: Downloaded robots.txt: https://www.tecmundo.com.br
+2025-04-11 22:25:00,128
+INFO: Downloaded robots.txt: https://ofertas.r7.com
+2025-04-11 22:25:02,635
+ERROR: Failed to download robots.txt: https://tempo.r7.com
+NoneType: None
+2025-04-11 22:25:03,859
+INFO: Downloaded robots.txt: http://comercial.recordtv.com.br
+2025-04-11 22:25:04,625
+ERROR: Failed to download robots.txt: https://mundorecord.com.br
+NoneType: None
+2025-04-11 22:25:04,849
+INFO: Downloaded robots.txt: https://www.youtube.com
+2025-04-11 22:25:05,558
+ERROR: Failed to download robots.txt: http://www.comercial.recordtv.com.br
+NoneType: None
+2025-04-11 22:25:06,267
+INFO: Downloaded robots.txt: https://www.sonoticiaboa.com.br
+2025-04-11 22:25:06,726
+INFO: Downloaded robots.txt: https://recordtv.gupy.io
+2025-04-11 22:25:07,049
+INFO: Downloaded robots.txt: http://recordtv.r7.com
+2025-04-11 22:25:08,108
+ERROR: Failed to download robots.txt: https://www.bancodigimais.com.br
+NoneType: None
+2025-04-11 22:25:09,055
+INFO: Downloaded robots.txt: https://sociedadeonline.com
+2025-04-11 22:25:10,300
+INFO: Downloaded robots.txt: https://www.erecord.com.br
+2025-04-11 22:25:10,929
+ERROR: Failed to download robots.txt: https://www.rftv.com.br
+NoneType: None
+2025-04-11 22:25:16,826
+ERROR: Failed to download robots.txt: https://recordtvamericas.com/
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 704, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connection.py", line 207, in _new_conn
+    raise ConnectTimeoutError(
+    ...<2 lines>...
+    ) from e
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fab3fff5810>, 'Connection to recordtvamericas.com timed out. (connect timeout=5)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='recordtvamericas.com', port=443): Max retries exceeded with url: /robots.txt (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fab3fff5810>, 'Connection to recordtvamericas.com timed out. (connect timeout=5)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/vinic/Documents/pa1/crawler.py", line 123, in download_robots_txt
+    robots_txt = requests.get(urljoin(base_url, "/robots.txt"), timeout=TIMEOUT)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/mnt/c/Users/vinic/Documents/pa1/.venv/lib/python3.13/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='recordtvamericas.com', port=443): Max retries exceeded with url: /robots.txt (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fab3fff5810>, 'Connection to recordtvamericas.com timed out. (connect timeout=5)'))
+2025-04-11 22:25:18,370
+INFO: Downloaded robots.txt: https://recordtv.r7.com
+2025-04-11 22:25:20,148
+ERROR: Failed to download robots.txt: https://recordtvjapan.com
+NoneType: None
+2025-04-11 22:25:20,421
+INFO: Downloaded robots.txt: https://www.universal.org
+2025-04-11 22:25:21,001
+ERROR: Failed to download robots.txt: https://www.univervideo.com
+NoneType: None
+2025-04-11 22:25:22,874
+INFO: Downloaded robots.txt: https://redealeluia.com.br
+2025-04-11 22:25:23,432
+INFO: Downloaded robots.txt: https://bsky.app
+2025-04-11 22:25:23,541
+INFO: Downloaded robots.txt: https://www.facebook.com
+2025-04-11 22:25:23,547
+INFO: URL disallowed by robots.txt: https://www.facebook.com/portalr7
+2025-04-11 22:25:24,135
+INFO: Downloaded robots.txt: https://instagram.com
+2025-04-11 22:25:24,136
+INFO: URL disallowed by robots.txt: https://instagram.com/portalr7
+2025-04-11 22:25:25,270
+INFO: Downloaded robots.txt: https://www.kwai.com
+2025-04-11 22:25:25,666
+INFO: Downloaded robots.txt: https://www.threads.net
+2025-04-11 22:25:25,667
+INFO: URL disallowed by robots.txt: https://www.threads.net/@portalr7?hl=pt-br
+2025-04-11 22:25:25,920
+INFO: Downloaded robots.txt: https://www.tiktok.com
+2025-04-11 22:25:26,155
+INFO: Downloaded robots.txt: https://twitter.com
+2025-04-11 22:25:26,156
+INFO: URL disallowed by robots.txt: https://twitter.com/portalr7
+2025-04-11 22:25:26,422
+INFO: Downloaded robots.txt: https://www.whatsapp.com
+2025-04-11 22:25:27,006
+INFO: Downloaded robots.txt: http://r7.com
+2025-04-11 22:25:28,798
+ERROR: Failed to download robots.txt: https://vivaavida.r7.com
+NoneType: None
+2025-04-11 22:25:28,906
+INFO: Downloaded robots.txt: https://www.vagalume.com.br
+2025-04-11 22:25:29,747
+ERROR: Failed to download robots.txt: https://www.redefamilia.com.br
+NoneType: None
+2025-04-11 22:25:30,466
+INFO: Downloaded robots.txt: https://ressoar.org.br
+2025-04-11 22:25:33,142
+INFO: Downloaded robots.txt: https://recordamericas.com
+2025-04-11 22:25:33,146
+INFO: Crawling: https://noticias.r7.com/goias/
+2025-04-11 22:25:33,146
+INFO: Current depth: 2
+2025-04-11 22:25:35,538
+INFO: Downloaded: https://noticias.r7.com/goias/
+2025-04-11 22:25:35,938
+ERROR: Failed to download robots.txt: https://playplus.onelink.me
+NoneType: None
+2025-04-11 22:25:35,956
+INFO: Crawling: https://record.r7.com/neemias/videos/
+2025-04-11 22:25:35,957
+INFO: Current depth: 3
+2025-04-11 22:25:36,614
+INFO: Downloaded: https://record.r7.com/neemias/videos/
+2025-04-11 22:25:36,884
+INFO: URL disallowed by robots.txt: https://www.facebook.com/recordoficial
+2025-04-11 22:25:37,178
+INFO: Downloaded robots.txt: https://www.instagram.com
+2025-04-11 22:25:37,180
+INFO: URL disallowed by robots.txt: https://www.instagram.com/recordoficial/
+2025-04-11 22:25:37,180
+INFO: URL disallowed by robots.txt: https://twitter.com/recordtvoficial
+2025-04-11 22:25:37,197
+INFO: Crawling: https://www.einerd.com.br/secao/quadrinhos/
+2025-04-11 22:25:37,201
+INFO: Current depth: 4
+2025-04-11 22:25:37,685
+INFO: Downloaded: https://www.einerd.com.br/secao/quadrinhos/
+2025-04-11 22:25:37,877
+INFO: Downloaded robots.txt: https://www.einerd.com
+2025-04-11 22:25:39,664
+INFO: Downloaded robots.txt: https://www.cyberclass.com.br
+2025-04-11 22:25:40,012
+INFO: Downloaded robots.txt: https://www.cifras.com.br
+2025-04-11 22:25:40,328
+INFO: Downloaded robots.txt: https://www.letras.com.br
+2025-04-11 22:25:40,333
+INFO: URL disallowed by robots.txt: https://www.facebook.com/einerd.com.br/
+2025-04-11 22:25:40,334
+INFO: URL disallowed by robots.txt: https://twitter.com/Ei_Nerd
+2025-04-11 22:25:40,336
+INFO: URL disallowed by robots.txt: https://www.instagram.com/einerd.com.br/
+2025-04-11 22:25:40,902
+ERROR: Failed to download robots.txt: https://www.petaxxon.com.br
+NoneType: None
+2025-04-11 22:25:41,909
+INFO: Downloaded robots.txt: https://cookiedatabase.org
+2025-04-11 22:25:41,909
+INFO: Crawling: https://noticias.r7.com/record-news/soltando-os-bichos/
+2025-04-11 22:25:41,910
+INFO: Current depth: 5
+2025-04-11 22:25:43,241
+INFO: Downloaded: https://noticias.r7.com/record-news/soltando-os-bichos/
