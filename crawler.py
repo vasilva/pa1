@@ -3,12 +3,18 @@ import time
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from protego import Protego
+from warcio.warcwriter import WARCWriter
+from warcio.statusandheaders import StatusAndHeaders
+from io import BytesIO
 import requests
 from requests.compat import urljoin
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from os import cpu_count, makedirs, path
 
+max_n_threads = cpu_count()
 
 logging.basicConfig(
-    filename="crawler.log",
+    # filename="crawler.log",
     filemode="w",
     format="%(asctime)s,%(msecs)03d\n" + "%(levelname)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
@@ -29,6 +35,68 @@ MAX_TEXT_SIZE = 20
 TIMEOUT = 5  # in seconds
 # Maximum time to wait between requests
 WAIT_TIME = 100  # in milliseconds
+# Maximum number of threads to use
+MAX_THREADS = max_n_threads // 2
+# Maximum number of URLs to visit
+MAX_URLS = 1000
+# Maximum number of URLs to visit in a WARC file
+MAX_URLS_WARC = 10
+
+
+def url_to_filename(url: str) -> str:
+    """
+    Convert a URL to a filename by replacing invalid characters.
+
+    Parameters
+    ----------
+        url (str): The URL to convert.
+    Returns
+    -------
+        str: The converted filename.
+    """
+    # Replace invalid characters with underscores
+    filename = url.replace(":", ";").replace("/", "_").replace("?", "!")
+    return filename
+
+
+def print_json_text(url: str, soup: BeautifulSoup) -> None:
+    """
+    Print the JSON format of the page content.
+    This function is used for debugging purposes.
+
+    Parameters
+    ----------
+        url (str): The URL of the page.
+        soup (BeautifulSoup): The BeautifulSoup object containing the HTML content.
+
+    Example
+    -------
+    The JSON format will look like this:
+
+    {
+        "URL": "http://example.com",
+        "Title": "Example Title",
+        "Text": "The first 20 words of the page.",
+        "Timestamp": 1234567890
+    }
+    """
+    # Extract text from the page
+    timestamp = int(time.time())
+    title_tag = soup.find("title")
+    title = title_tag.text if title_tag else ""
+
+    text_tag = soup.get_text()
+    text = text_tag.split() if text_tag else []
+    # Limit the text to the first 20 words
+    text = " ".join(text[:MAX_TEXT_SIZE]) if text else ""
+    # Create a JSON-like format
+    json_format["URL"] = url
+    json_format["Title"] = title
+    json_format["Text"] = text
+    json_format["Timestamp"] = timestamp
+
+    # Print the JSON format
+    print(json_format, end="\n\n")
 
 
 class CrawlerException(Exception):
@@ -44,9 +112,11 @@ class Crawler:
         self,
         urls: set[str] = set(),
         max_urls: int = 100,
-        max_depth: int = 20,
+        max_depth: int = 10,
         debug: bool = False,
-    ):
+        log: bool = False,
+        block_size: int = 10,
+    ) -> None:
         """
         Initialize the crawler with a list of URLs to visit.
 
@@ -56,17 +126,34 @@ class Crawler:
             max_depth (int): The maximum depth to crawl.
             max_urls (int): The maximum number of URLs to visit.
             debug (bool): If True, enable debug mode.
+            log (bool): If True, enable logging mode.
+            n_blocks (int): The number of blocks to divide the URLs into.
+            block_size (int): The size of each block.
         """
+        # URLs to visit
         self.urls_to_visit = urls
+        # URLs already visited
         self.urls_visited = set()
+        # URLs disallowed by robots.txt
         self.urls_disallowed = set()
+        # robots.txt files for each domain
         self.robots_txt = {}
+        # Maximum number of URLs to visit
         self.max_urls = max_urls
+        # Maximum depth to crawl
         self.max_depth = max_depth
+        # Current depth of the crawl
         self.current_depth = 0
+        # Debug mode
         self.debug = debug
+        # Logging mode
+        self.log = log
+        # Size of each block of URLs
+        self.block_size = block_size
+        self.current_block = 0
+        self.urls_downloaded = 0
 
-    def get_base_url(self, url: str):
+    def get_base_url(self, url: str) -> str:
         """
         Extract the base URL from a given URL.
 
@@ -83,7 +170,7 @@ class Crawler:
         base_url = split_url[0] + "//" + split_url[2]
         return base_url
 
-    def get_robots_txt(self, url: str):
+    def get_robots_txt(self, url: str) -> str:
         """
         Get the robots.txt file for a given URL.
 
@@ -101,7 +188,7 @@ class Crawler:
 
         return self.robots_txt[base_url]
 
-    def download_robots_txt(self, url: str):
+    def download_robots_txt(self, url: str) -> str:
         """
         Download the robots.txt file from the given URL.
 
@@ -114,32 +201,29 @@ class Crawler:
         """
         base_url = self.get_base_url(url)
         if not base_url:
-            if self.debug:
+            if self.log:
                 logging.exception(f"Invalid URL: {url}")
             return ""
-        
+
         # Download the robots.txt file
         try:
             robots_txt = requests.get(urljoin(base_url, "/robots.txt"), timeout=TIMEOUT)
-        
+
         except requests.exceptions.RequestException:
-            if self.debug:
+            if self.log:
                 logging.exception(f"Failed to download robots.txt: {url}")
             return ""
-        
+
         except requests.exceptions.HTTPError:
-            if self.debug:
+            if self.log:
                 logging.exception(f"Failed to download robots.txt: {url}")
             return ""
-        
+
         # Check if the response is successful
         if robots_txt.status_code == 200:
-            if self.debug:
-                logging.info(f"Downloaded robots.txt: {base_url}")
             return robots_txt.text
+        
         else:
-            if self.debug:
-                logging.exception(f"Failed to download robots.txt: {base_url}")
             return ""
 
     def download_url(self, url: str):
@@ -151,35 +235,33 @@ class Crawler:
             url (str): The URL to download.
         Returns
         -------
-            str: The HTML content of the URL.
-        """
+            str: The content of the URL."""
         try:
             response = requests.get(url, timeout=TIMEOUT)
 
-        except requests.exceptions.RequestException:
-            if self.debug:
+        except Exception:
+            if self.log:
                 logging.exception(f"Failed to download: {url}")
-            return ""
-        
-        except requests.exceptions.HTTPError:
-            if self.debug:
-                logging.exception(f"Failed to download: {url}")
-            return ""
+            return None
 
-        # Check if the response is successful
+            # Check if the response is successful
         if response.status_code != 200:
-            if self.debug:
-                logging.exception(f"Failed to download: {url}")
-            return ""
+            if self.log:
+                logging.exception(f"Status Code {response.status_code}: {url}")
+            return None
 
-        if self.debug:
+        if self.log:
             logging.info(f"Downloaded: {url}")
-            with open(f"out/{len(self.urls_visited)}.txt", "w") as f:
-                f.write(response.text)
+
+        self.current_block = self.urls_downloaded // self.block_size
+        self.urls_downloaded += 1
+        write_warc_file(url, response, self.current_block)
+        if self.log:
+            logging.info(f"Wrote WARC file: {url_to_filename(url)}")
 
         return response.text
 
-    def is_url_allowed(self, url: str):
+    def is_url_allowed(self, url: str) -> bool:
         """
         Check if a URL is allowed to be crawled based on the robots.txt file.
 
@@ -201,49 +283,10 @@ class Crawler:
         # Check if the URL is allowed
         allowed = rp.can_fetch(url, "*")
         if not allowed:
-            if self.debug:
+            if self.log:
                 logging.info(f"URL disallowed by robots.txt: {url}")
             self.urls_disallowed.add(url)
         return allowed
-
-    def print_json_text(self, url: str, soup: BeautifulSoup):
-        """
-        Print the JSON format of the page content.
-        This function is used for debugging purposes.
-
-        Parameters
-        ----------
-            url (str): The URL of the page.
-            soup (BeautifulSoup): The BeautifulSoup object containing the HTML content.
-
-        Example
-        -------
-        The JSON format will look like this:
-
-        {
-            "URL": "http://example.com",
-            "Title": "Example Title",
-            "Text": "The first 20 words of the page.",
-            "Timestamp": 1234567890
-        }
-        """
-        # Extract text from the page
-        timestamp = int(time.time())
-        title_tag = soup.find("title")
-        title = title_tag.text if title_tag else ""
-
-        text_tag = soup.get_text()
-        text = text_tag.split() if text_tag else []
-        # Limit the text to the first 20 words
-        text = " ".join(text[:MAX_TEXT_SIZE]) if text else ""
-        # Create a JSON-like format
-        json_format["URL"] = url
-        json_format["Title"] = title
-        json_format["Text"] = text
-        json_format["Timestamp"] = timestamp
-
-        # Print the JSON format
-        print(json_format, end="\n\n")
 
     def get_linked_urls(self, url: str, html: str):
         """
@@ -269,7 +312,7 @@ class Crawler:
 
             yield href
 
-    def add_urls_to_visit(self, url: str):
+    def add_urls_to_visit(self, url: str) -> None:
         """
         Add a URL to the list of URLs to visit if it hasn't been visited yet.
 
@@ -285,71 +328,158 @@ class Crawler:
         if url not in self.urls_visited and url not in self.urls_disallowed:
             self.urls_to_visit.add(url)
 
-    def crawl(self, url: str):
+    def crawl(self, url: str) -> str:
         """
         Crawl a URL, download its content, and extract linked URLs.
 
         Parameters
         ----------
             url (str): The URL to crawl.
+
+        Returns
+        -------
+            str: The HTML content of the page.
         """
         self.get_robots_txt(url)
         # Check if the URL is allowed to be crawled
         if not self.is_url_allowed(url):
-            if self.debug:
+            if self.log:
                 logging.info(f"URL disallowed: {url}")
-            return
+            return ""
 
         # Check if the maximum depth is reached
         self.current_depth += 1
-        if self.debug:
+        if self.log:
             logging.info(f"Current depth: {self.current_depth}")
         if self.current_depth > self.max_depth:
-            if self.debug:
+            if self.log:
                 logging.info(f"Maximum depth reached: {url}")
             self.current_depth = 0
-            return
+            return ""
 
         # Download the content of the URL
         html = self.download_url(url)
 
         # Check if the HTML content is valid
-        if not html:
-            return
+        if html:
+            if self.debug:
+                soup = BeautifulSoup(html, "html.parser")
+                print_json_text(url, soup)
 
-        if self.debug:
-            soup = BeautifulSoup(html, "html.parser")
-            self.print_json_text(url, soup)
+            # Extract linked URLs and add them to the list of URLs to visit
+            for url in self.get_linked_urls(url, html):
+                self.add_urls_to_visit(url)
 
-        # Extract linked URLs and add them to the list of URLs to visit
-        for url in self.get_linked_urls(url, html):
-            self.add_urls_to_visit(url)
+        return html
 
-    def run(self):
+    def crawl_thread(self, url: str, previous_url: str) -> str:
+        """
+        Crawl a URL in a separate thread.
+
+        Parameters
+        ----------
+            url (str): The URL to crawl.
+            previous_url (str): The previous URL visited.
+        Returns
+        -------
+            str: The HTML content of the page."""
+        if not url:
+            return None
+        html = ""
+        domain = self.get_base_url(url)
+        if domain == self.get_base_url(previous_url):
+            time.sleep(WAIT_TIME / 1000)
+
+        if self.log:
+            logging.info(f"Crawling: {url}")
+
+        try:
+            html = self.crawl(url)
+        
+        except CrawlerException:
+            if self.log:
+                logging.exception(f"Failed to crawl: {url}")
+            return ""
+        
+        finally:
+            self.urls_visited.add(url)
+            return html
+
+    def run(self) -> None:
         """
         Start the crawling process.
         """
-        previous_url = ""
-        while self.urls_to_visit and len(self.urls_visited) < self.max_urls:
-            url = self.urls_to_visit.pop()
-            domain = self.get_base_url(url)
-            if domain == self.get_base_url(previous_url):
-                time.sleep(WAIT_TIME / 1000)
-            
-            if self.debug:
-                logging.info(f"Crawling: {url}")
-            
-            try:
-                self.crawl(url)
+        current_urls = ["" for _ in range(MAX_THREADS)]
+        previous_urls = ["" for _ in range(MAX_THREADS)]
+        results = []
+        while self.urls_to_visit and self.urls_downloaded < self.max_urls:
+            for i in range(MAX_THREADS):
+                if not self.urls_to_visit:
+                    break
+                url = self.urls_to_visit.pop()
+                current_urls[i] = url
 
-            except CrawlerException:
-                if self.debug:
-                    logging.exception(f"Failed to crawl: {url}")
+            with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+                futures = {
+                    executor.submit(self.crawl_thread, current_url, previous_url)
+                    for current_url, previous_url in zip(current_urls, previous_urls)
+                }
 
-            finally:
-                self.urls_visited.add(url)
-                previous_url = url
+                for future in as_completed(futures):
+                    try:
+                        rs = future.result()
+                        if rs:
+                            results.append(rs)
 
-        print(f"Visited {len(self.urls_visited)} URLs.")
-        print(f"Disallowed {len(self.urls_disallowed)} URLs.")
-        print(f"Remaining {len(self.urls_to_visit)} URLs.")
+                    except Exception as e:
+                        if self.log:
+                            logging.exception(f"Error in thread: {e}")
+
+                    finally:
+                        if len(results) >= self.block_size:
+                            if self.log:
+                                logging.info(f"Finished block")
+                            # Clear the results
+                            results.clear()
+
+            # Update the previous URLs
+            previous_urls = current_urls
+            current_urls = ["" for _ in range(MAX_THREADS)]
+            if self.log:
+                print("-" * 50)
+                print(f"Downloaded {self.urls_downloaded} URLs.")
+                print(f"Disallowed {len(self.urls_disallowed)} URLs.")
+                print(f"Remaining {len(self.urls_to_visit)} URLs.")
+
+
+def write_warc_file(url: str, response: requests.Response, block: int):
+    """
+    Write the HTML content to a WARC file.
+
+    Parameters
+    ----------
+        url (str): The URL of the page.
+        response (requests.Response): The response object containing the content.
+        block (int): The block number.
+    """
+    # Create the WARC file
+    filename = f"warc/{block}/{url_to_filename(url)}.warc.gz"
+    # Create the directory if it doesn't exist
+    makedirs(path.dirname(filename), exist_ok=True)
+
+    with open(filename, "wb") as f:
+        writer = WARCWriter(f, gzip=True)
+
+        # get raw headers from urllib3
+        headers_list = response.raw.headers.items()
+
+        http_headers = StatusAndHeaders("200 OK", headers_list, protocol="HTTP/1.1")
+
+        record = writer.create_warc_record(
+            url,
+            "response",
+            payload=BytesIO(response.content),
+            http_headers=http_headers,
+        )
+
+        writer.write_record(record)

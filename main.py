@@ -59,6 +59,8 @@ def main():
         urls=seeds,
         max_urls=args.Limit,
         debug=args.Debug,
+        log=True,
+        block_size=100
     )
     crawler.run()
 
