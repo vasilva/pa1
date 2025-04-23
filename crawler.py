@@ -11,6 +11,11 @@ from requests.compat import urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from os import cpu_count, makedirs, path
 
+from bs4 import XMLParsedAsHTMLWarning
+import warnings
+
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
+
 max_n_threads = cpu_count()
 
 logging.basicConfig(
@@ -32,15 +37,11 @@ json_format = {
 # Maximum number of words to extract from the page
 MAX_TEXT_SIZE = 20
 # Maximum time to wait for a response
-TIMEOUT = 5  # in seconds
+TIMEOUT = 2  # in seconds
 # Maximum time to wait between requests
 WAIT_TIME = 100  # in milliseconds
 # Maximum number of threads to use
-MAX_THREADS = max_n_threads // 2
-# Maximum number of URLs to visit
-MAX_URLS = 1000
-# Maximum number of URLs to visit in a WARC file
-MAX_URLS_WARC = 10
+MAX_THREADS = max_n_threads
 
 
 def url_to_filename(url: str) -> str:
@@ -149,7 +150,10 @@ class Crawler:
         # Logging mode
         self.log = log
         # Size of each block of URLs
-        self.block_size = block_size
+        if block_size > max_urls:
+            self.block_size = max_urls
+        else:
+            self.block_size = block_size
         self.current_block = 0
         self.urls_downloaded = 0
 
@@ -201,8 +205,6 @@ class Crawler:
         """
         base_url = self.get_base_url(url)
         if not base_url:
-            if self.log:
-                logging.exception(f"Invalid URL: {url}")
             return ""
 
         # Download the robots.txt file
@@ -210,19 +212,17 @@ class Crawler:
             robots_txt = requests.get(urljoin(base_url, "/robots.txt"), timeout=TIMEOUT)
 
         except requests.exceptions.RequestException:
-            if self.log:
-                logging.exception(f"Failed to download robots.txt: {url}")
             return ""
 
         except requests.exceptions.HTTPError:
-            if self.log:
-                logging.exception(f"Failed to download robots.txt: {url}")
             return ""
 
+        except Exception:
+            return ""
         # Check if the response is successful
         if robots_txt.status_code == 200:
             return robots_txt.text
-        
+
         else:
             return ""
 
@@ -240,25 +240,15 @@ class Crawler:
             response = requests.get(url, timeout=TIMEOUT)
 
         except Exception:
-            if self.log:
-                logging.exception(f"Failed to download: {url}")
-            return None
+            return ""
 
             # Check if the response is successful
         if response.status_code != 200:
-            if self.log:
-                logging.exception(f"Status Code {response.status_code}: {url}")
-            return None
-
-        if self.log:
-            logging.info(f"Downloaded: {url}")
+            return ""
 
         self.current_block = self.urls_downloaded // self.block_size
         self.urls_downloaded += 1
         write_warc_file(url, response, self.current_block)
-        if self.log:
-            logging.info(f"Wrote WARC file: {url_to_filename(url)}")
-
         return response.text
 
     def is_url_allowed(self, url: str) -> bool:
@@ -283,8 +273,6 @@ class Crawler:
         # Check if the URL is allowed
         allowed = rp.can_fetch(url, "*")
         if not allowed:
-            if self.log:
-                logging.info(f"URL disallowed by robots.txt: {url}")
             self.urls_disallowed.add(url)
         return allowed
 
@@ -325,7 +313,11 @@ class Crawler:
             return
 
         # Check if the URL is already visited or disallowed
-        if url not in self.urls_visited and url not in self.urls_disallowed:
+        if (
+            len(self.urls_to_visit) < 10000
+            and url not in self.urls_visited
+            and url not in self.urls_disallowed
+        ):
             self.urls_to_visit.add(url)
 
     def crawl(self, url: str) -> str:
@@ -343,17 +335,11 @@ class Crawler:
         self.get_robots_txt(url)
         # Check if the URL is allowed to be crawled
         if not self.is_url_allowed(url):
-            if self.log:
-                logging.info(f"URL disallowed: {url}")
             return ""
 
         # Check if the maximum depth is reached
         self.current_depth += 1
-        if self.log:
-            logging.info(f"Current depth: {self.current_depth}")
         if self.current_depth > self.max_depth:
-            if self.log:
-                logging.info(f"Maximum depth reached: {url}")
             self.current_depth = 0
             return ""
 
@@ -390,17 +376,12 @@ class Crawler:
         if domain == self.get_base_url(previous_url):
             time.sleep(WAIT_TIME / 1000)
 
-        if self.log:
-            logging.info(f"Crawling: {url}")
-
         try:
             html = self.crawl(url)
-        
+
         except CrawlerException:
-            if self.log:
-                logging.exception(f"Failed to crawl: {url}")
             return ""
-        
+
         finally:
             self.urls_visited.add(url)
             return html
@@ -424,7 +405,6 @@ class Crawler:
                     executor.submit(self.crawl_thread, current_url, previous_url)
                     for current_url, previous_url in zip(current_urls, previous_urls)
                 }
-
                 for future in as_completed(futures):
                     try:
                         rs = future.result()
@@ -448,8 +428,6 @@ class Crawler:
             if self.log:
                 print("-" * 50)
                 print(f"Downloaded {self.urls_downloaded} URLs.")
-                print(f"Disallowed {len(self.urls_disallowed)} URLs.")
-                print(f"Remaining {len(self.urls_to_visit)} URLs.")
 
 
 def write_warc_file(url: str, response: requests.Response, block: int):
@@ -481,5 +459,4 @@ def write_warc_file(url: str, response: requests.Response, block: int):
             payload=BytesIO(response.content),
             http_headers=http_headers,
         )
-
         writer.write_record(record)

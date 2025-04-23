@@ -1,13 +1,22 @@
 import argparse
+import shutil
+import os
 from crawler import Crawler
 
-seeds_urls = [
-    "http://www.r7.com/",
-    "http://mdemulher.abril.com.br/",
-    "http://www.personare.com.br/",
-]
 
-LIMIT = 5
+def zip_warc_files(path: str):
+    """
+    Compress a directory into a zip file.
+
+    Parameters
+    ----------
+        path (str): Path to the directory to compress.
+    """
+    sub_directories = [f.name for f in os.scandir(path) if f.is_dir()]
+    for sub_dir in sub_directories:
+        sub_dir_path = os.path.join(path, sub_dir)
+        output_filename = f"zip/block {sub_dir}"
+        shutil.make_archive(output_filename, "zip", sub_dir_path)
 
 
 def get_args():
@@ -20,7 +29,7 @@ def get_args():
     """
     parser = argparse.ArgumentParser(
         description="Web Crawler",
-        usage="%(prog)s -s <SEEDS> -n <LIMIT> [-d]",
+        usage="%(prog)s -s <SEEDS> -n <LIMIT> [-d] [-l]",
     )
     parser.add_argument(
         "-s",
@@ -34,13 +43,19 @@ def get_args():
         "--Limit",
         type=int,
         help="Maximum number of URLs to visit",
-        default=LIMIT,
+        default=1000,
     )
     parser.add_argument(
         "-d",
         "--Debug",
         action="store_true",
         help="Enable debug mode",
+    )
+    parser.add_argument(
+        "-l",
+        "--Log",
+        action="store_true",
+        help="Enable Logging",
     )
     return parser.parse_args()
 
@@ -56,13 +71,10 @@ def main():
         seeds = {url.strip() for url in seeds}
 
     crawler = Crawler(
-        urls=seeds,
-        max_urls=args.Limit,
-        debug=args.Debug,
-        log=True,
-        block_size=100
+        urls=seeds, max_urls=args.Limit, debug=args.Debug, log=args.Log, block_size=1000
     )
     crawler.run()
+    zip_warc_files("warc")
 
 
 if __name__ == "__main__":
