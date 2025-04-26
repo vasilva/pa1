@@ -71,7 +71,11 @@ def main():
         seeds = {url.strip() for url in seeds}
 
     crawler = Crawler(
-        urls=seeds, max_urls=args.Limit, debug=args.Debug, log=args.Log, block_size=1000
+        urls=seeds,
+        max_urls=args.Limit,
+        debug=args.Debug,
+        log=args.Log,
+        block_size=1000,
     )
     crawler.run()
     zip_warc_files("warc")
