@@ -10,7 +10,6 @@ import requests
 from requests.compat import urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from os import cpu_count, makedirs, path
-
 from bs4 import XMLParsedAsHTMLWarning
 import warnings
 
@@ -37,11 +36,11 @@ json_format = {
 # Maximum number of words to extract from the page
 MAX_TEXT_SIZE = 20
 # Maximum time to wait for a response
-TIMEOUT = 2  # in seconds
+TIMEOUT = 2
 # Maximum time to wait between requests
 WAIT_TIME = 100  # in milliseconds
 # Maximum number of threads to use
-MAX_THREADS = max_n_threads
+MAX_THREADS = max_n_threads - 1
 
 
 def url_to_filename(url: str) -> str:
@@ -90,6 +89,7 @@ def print_json_text(url: str, soup: BeautifulSoup) -> None:
     text = text_tag.split() if text_tag else []
     # Limit the text to the first 20 words
     text = " ".join(text[:MAX_TEXT_SIZE]) if text else ""
+
     # Create a JSON-like format
     json_format["URL"] = url
     json_format["Title"] = title
@@ -154,7 +154,9 @@ class Crawler:
             self.block_size = max_urls
         else:
             self.block_size = block_size
+        # Counter of the current block
         self.current_block = 0
+        # Number of URLs downloaded
         self.urls_downloaded = 0
 
     def get_base_url(self, url: str) -> str:
@@ -213,12 +215,11 @@ class Crawler:
 
         except requests.exceptions.RequestException:
             return ""
-
         except requests.exceptions.HTTPError:
             return ""
-
         except Exception:
             return ""
+
         # Check if the response is successful
         if robots_txt.status_code == 200:
             return robots_txt.text
@@ -235,7 +236,8 @@ class Crawler:
             url (str): The URL to download.
         Returns
         -------
-            str: The content of the URL."""
+            str: The content of the URL.
+        """
         try:
             response = requests.get(url, timeout=TIMEOUT)
 
@@ -268,8 +270,10 @@ class Crawler:
         robots_txt = self.get_robots_txt(url)
         if not robots_txt:
             return True
+
         # Parse the robots.txt file
         rp = Protego.parse(robots_txt)
+
         # Check if the URL is allowed
         allowed = rp.can_fetch(url, "*")
         if not allowed:
@@ -368,9 +372,11 @@ class Crawler:
             previous_url (str): The previous URL visited.
         Returns
         -------
-            str: The HTML content of the page."""
+            str: The HTML content of the page.
+        """
         if not url:
-            return None
+            return ""
+
         html = ""
         domain = self.get_base_url(url)
         if domain == self.get_base_url(previous_url):
@@ -400,6 +406,7 @@ class Crawler:
                 url = self.urls_to_visit.pop()
                 current_urls[i] = url
 
+            # Distribute to the threads
             with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
                 futures = {
                     executor.submit(self.crawl_thread, current_url, previous_url)
